@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { DeleteUserDialog } from "@/components/delete-user-dialog";
 import { EditUserDialog } from "@/components/edit-user-dialog";
 
-import { createUser } from "./actions";
+import { createUser, signOut } from "./actions";
 
 type UserRow = {
   id: string;
@@ -25,6 +25,11 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const supabase = await createClient();
   const params = (await searchParams) ?? {};
   const formError = params.error;
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+  const userEmail = session?.user?.email ?? "Unknown";
 
   const { data: users, error } = await supabase
     .from("users")
@@ -47,6 +52,17 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             Welcome to your dashboard — add teammates and browse everyone below.
           </p>
         </header>
+
+        <div className="mt-6 flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white/90 p-4 shadow-sm shadow-slate-200/40 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-slate-600">
+            Signed in as <span className="font-medium text-slate-900">{userEmail}</span>
+          </p>
+          <form action={signOut} className="w-full sm:w-auto">
+            <Button type="submit" variant="outline" size="sm" className="w-full sm:w-auto">
+              Log out
+            </Button>
+          </form>
+        </div>
 
         <div className="mt-12 flex justify-center">
           <form

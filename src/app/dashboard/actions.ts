@@ -68,6 +68,19 @@ export async function updateUser(userId: string, name: string, email: string): P
   }
 }
 
+export async function signOut() {
+  "use server";
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.signOut();
+
+  if (error) {
+    redirect(`/dashboard?error=${encodeURIComponent(error.message)}`);
+  }
+
+  redirect("/");
+}
+
 export async function deleteUser(formData: FormData): Promise<DeleteUserResult> {
   try {
     const id = String(formData.get("id") ?? "").trim();
