@@ -144,7 +144,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                     <li key={user.id}>
                       <article className="group flex h-full flex-col rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm ring-1 ring-slate-200/40 transition-shadow hover:shadow-md hover:shadow-slate-200/80">
                         <div className="flex items-start gap-3">
-                          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-sm font-bold text-white shadow-sm">
+                          <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-red-600 to-pink-600 text-sm font-bold text-white shadow-sm">
                             {initials.slice(0, 2)}
                           </div>
                           <div className="min-w-0 flex-1">
