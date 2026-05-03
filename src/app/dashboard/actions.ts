@@ -27,3 +27,31 @@ export async function createUser(formData: FormData) {
   revalidatePath("/dashboard");
   redirect("/dashboard");
 }
+
+export type DeleteUserResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export async function deleteUser(formData: FormData): Promise<DeleteUserResult> {
+  try {
+    const id = String(formData.get("id") ?? "").trim();
+
+    if (!id) {
+      return { ok: false, error: "Missing user id." };
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase.from("users").delete().eq("id", id);
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+
+    revalidatePath("/dashboard");
+    return { ok: true };
+  } catch (e) {
+    const message =
+      e instanceof Error ? e.message : "Something went wrong while deleting.";
+    return { ok: false, error: message };
+  }
+}

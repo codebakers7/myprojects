@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import { DeleteUserDialog } from "@/components/delete-user-dialog";
+
 import { createUser } from "./actions";
 
 type UserRow = {
@@ -60,7 +62,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </div>
 
             {formError ? (
-              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-relaxed text-red-800">
+              <p className="rounded-xl border border-purple-200 bg-yellow-50 px-4 py-3 text-sm leading-relaxed text-red-800">
                 {formError}
               </p>
             ) : null}
@@ -140,7 +142,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                   return (
                     <li key={user.id}>
                       <article className="group flex h-full flex-col rounded-2xl border border-slate-200/90 bg-white p-5 shadow-sm ring-1 ring-slate-200/40 transition-shadow hover:shadow-md hover:shadow-slate-200/80">
-                        <div className="flex items-start gap-4">
+                        <div className="flex items-start gap-3">
                           <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-emerald-600 to-teal-600 text-sm font-bold text-white shadow-sm">
                             {initials.slice(0, 2)}
                           </div>
@@ -151,6 +153,13 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                             <p className="mt-1 truncate text-sm text-slate-500">
                               {user.email ?? "—"}
                             </p>
+                          </div>
+                          <div className="shrink-0">
+                            <DeleteUserDialog
+                              userId={user.id}
+                              userName={user.name}
+                              userEmail={user.email}
+                            />
                           </div>
                         </div>
                       </article>
