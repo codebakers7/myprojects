@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import { DeleteUserDialog } from "@/components/delete-user-dialog";
+import { EditUserDialog } from "@/components/edit-user-dialog";
 
 import { createUser } from "./actions";
 
@@ -154,7 +155,12 @@ export default async function DashboardPage({ searchParams }: PageProps) {
                               {user.email ?? "—"}
                             </p>
                           </div>
-                          <div className="shrink-0">
+                          <div className="flex shrink-0 flex-col gap-2 sm:flex-row sm:items-start">
+                            <EditUserDialog
+                              userId={user.id}
+                              userName={user.name}
+                              userEmail={user.email}
+                            />
                             <DeleteUserDialog
                               userId={user.id}
                               userName={user.name}

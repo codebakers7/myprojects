@@ -32,6 +32,42 @@ export type DeleteUserResult =
   | { ok: true }
   | { ok: false; error: string };
 
+export type UpdateUserResult =
+  | { ok: true }
+  | { ok: false; error: string };
+
+export async function updateUser(userId: string, name: string, email: string): Promise<UpdateUserResult> {
+  try {
+    const id = userId.trim();
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+
+    if (!id) {
+      return { ok: false, error: "Missing user id." };
+    }
+    if (!trimmedName || !trimmedEmail) {
+      return { ok: false, error: "Name and email are required." };
+    }
+
+    const supabase = await createClient();
+    const { error } = await supabase
+      .from("users")
+      .update({ name: trimmedName, email: trimmedEmail })
+      .eq("id", id);
+
+    if (error) {
+      return { ok: false, error: error.message };
+    }
+
+    revalidatePath("/dashboard");
+    return { ok: true };
+  } catch (e) {
+    const message =
+      e instanceof Error ? e.message : "Something went wrong while updating.";
+    return { ok: false, error: message };
+  }
+}
+
 export async function deleteUser(formData: FormData): Promise<DeleteUserResult> {
   try {
     const id = String(formData.get("id") ?? "").trim();
