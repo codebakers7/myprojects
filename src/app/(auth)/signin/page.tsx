@@ -1,9 +1,7 @@
-import { redirect } from "next/navigation";
-
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createClient } from "@/lib/supabase/server";
+import { signin } from "../actions";
 
 type SigninPageProps = {
   searchParams?: { error?: string };
@@ -26,7 +24,7 @@ export default function SigninPage({ searchParams }: SigninPageProps) {
           </p>
         ) : null}
 
-        <form action={signinWithEmailPassword} className="mt-8 space-y-5">
+        <form action={signin} className="mt-8 space-y-5">
           <div className="space-y-2">
             <Label htmlFor="email" className="text-sm font-medium text-slate-700">
               Email
@@ -66,24 +64,4 @@ export default function SigninPage({ searchParams }: SigninPageProps) {
   );
 }
 
-async function signinWithEmailPassword(formData: FormData) {
-  "use server";
 
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
-
-  if (!email || !password) {
-    redirect(
-      `/auth/signin?error=${encodeURIComponent("Email and password are required.")}`
-    );
-  }
-
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
-
-  if (error) {
-    redirect(`/auth/signin?error=${encodeURIComponent(error.message)}`);
-  }
-
-  redirect("/dashboard");
-}

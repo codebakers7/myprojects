@@ -8,7 +8,6 @@ import { createClient } from "@/lib/supabase/server";
 function errQuery(msg: string) {
   return `?error=${encodeURIComponent(msg)}`;
 }
-
 export async function createUser(formData: FormData) {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
@@ -18,7 +17,19 @@ export async function createUser(formData: FormData) {
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.from("users").insert({ name, email });
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect(`/dashboard${errQuery("You must be logged in to add users.")}`);
+  }
+
+  const { error } = await supabase.from("users").insert({
+    name,
+    email,
+    created_by: user.id,
+  });
 
   if (error) {
     redirect(`/dashboard${errQuery(error.message)}`);
